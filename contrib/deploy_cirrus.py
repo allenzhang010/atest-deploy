@@ -492,6 +492,9 @@ remote host".format(options.remote_host))
                 logging.error("Error: There is already existing app \
 instance!! Please use -f")
                 exit(1)
+        if not options.autotest_host:
+            logging.error("Must specify the -a(autotest_host) option!!!")
+            exit(1)
         if options.autotest_path:
             repo_top_dir = options.autotest_path
         else:
