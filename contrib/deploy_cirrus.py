@@ -229,38 +229,49 @@ class install_autotest:
 
     def setup_blofly_repos(self):
         file_contents = """
-[blofly-repo]
-name=Blofly Server 6.3 DISC Repository
-baseurl=http://linux.usa.hp.com/blofly/mrepo/RHEL-6.3Server-x86_64/disc1/
+[centos-self]
+name=(on cirrus-fileserver) Extra Packages for Enterprise Linux 6 - $basearch
+baseurl=http://cirrus-fileserver.chn.hp.com/pub/centos/
 enable=1
 gpgcheck=0
-
-[blofly-Server-Repo]
-name=Blofly Server 6.3 Repository
-baseurl=http://linux.usa.hp.com/blofly/mrepo/RHEL-6.3Server_Supplementary-x86_64/RPMS.os/
-enabled=1
-gpgcheck=0
-
-[blofly-Server-Supp-Repo]
-name=Blofly Server 6.3 Supplementary Repository
-baseurl=http://linux.usa.hp.com/blofly/mrepo/RHEL-6.3Server_Supplementary-x86_64/RPMS.os/
-enabled=1
-gpgcheck=0
 """
-        repofile_handle = open("/etc/yum.repos.d/blofly.repo", 'w')
+        repofile_handle = open("/etc/yum.repos.d/centos-self.repo", 'w')
         repofile_handle.write(file_contents)
         repofile_handle.close()
 
     def setup_epel_repos(self):
-        logging.info("Setting up EPEL 6 repo pointing to mint-fileserver...")
+        logging.info("Setting up EPEL 6 repo pointing to cirrus-fileserver...")
         file_contents = """
-[mint-epel-6]
-name=(on mint-fileserver) Extra Packages for Enterprise Linux 6 - $basearch
-baseurl=http://mint-fileserver.usa.hp.com/cobbler/epel/6/$basearch
+[cirrus-epel-6]
+name=(on cirrus-fileserver) Extra Packages for Enterprise Linux 6 - $basearch
+baseurl=http://cirrus-fileserver.chn.hp.com/pub/epel/6/$basearch
+failovermethod=priority
 enabled=1
 gpgcheck=0
 """
-        repofile_handle = open("/etc/yum.repos.d/mint-epel-6.repo", 'w')
+        if os.path.exists("/etc/yum.repos.d/cirrus-epel-6.repo"):
+            os.unlink("/etc/yum.repos.d/cirrus-epel-6.repo")
+        repofile_handle = open("/etc/yum.repos.d/cirrus-epel-6.repo", 'w')
+        repofile_handle.write(file_contents)
+        repofile_handle.close()
+
+        logging.info("Yum installing the 'epel-release-6' package...")
+        cmd = "yum -y install epel-release-6"
+        logging.info(cmd)
+        retcode = os.system(cmd)
+        if retcode != 0:
+            raise Exception("Could not install EPEL RPM.")
+
+        file_contents = """
+[cirrus-epel-6]
+name=(on cirrus-fileserver) Extra Packages for Enterprise Linux 6 - $basearch
+baseurl=http://cirrus-fileserver.chn.hp.com/pub/epel/6/$basearch
+failovermethod=priority
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+"""
+        repofile_handle = open("/etc/yum.repos.d/cirrus-epel-6.repo", 'w')
         repofile_handle.write(file_contents)
         repofile_handle.close()
 
