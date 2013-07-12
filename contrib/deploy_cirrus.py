@@ -361,9 +361,9 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
                                   "--timeout", "120"])
         else:
             os.chdir('/usr/local')
-            logging.info("git clone ssh://zhazhiqi@depot01.chn.hp.com:29418/Autotest.git autotest in /usr/local/ directory")
+            logging.info("git clone ssh://zhazhiqi@cirrus-git.chn.hp.com:29418/Autotest.git autotest in /usr/local/ directory")
             output = _check_output(["git", "clone",
-                                    "ssh://zhazhiqi@depot01.chn.hp.com:29418/Autotest.git",
+                                    "ssh://zhazhiqi@cirrus-git.chn.hp.com:29418/Autotest.git",
                                     "autotest"])
             logging.debug(output)
             os.chdir('/usr/local/autotest')
