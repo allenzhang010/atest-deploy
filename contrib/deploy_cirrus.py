@@ -212,7 +212,7 @@ def prepare_git():
 class install_autotest:
     def __init__(self, app_path, evfile='/etc/environment'):
         self.app_path = app_path
-        self.setup_blofly_repos()
+        self.setup_centos_repos()
         self.setup_epel_repos()
         allevs = list()
         try:
@@ -227,7 +227,7 @@ class install_autotest:
                 pass
         logging.debug("Created installation object")
 
-    def setup_blofly_repos(self):
+    def setup_centos_repos(self):
         file_contents = """
 [centos-self]
 name=(on cirrus-fileserver) Extra Packages for Enterprise Linux 6 - $basearch
